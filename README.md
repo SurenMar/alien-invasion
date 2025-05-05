@@ -36,9 +36,8 @@ _Work in Progress_
 
 ## ✅ To-Do List
 
-1. Modify the display to work with different devices.
-2. Refactor the button system into a single file:
+1. Refactor the button system into a single file:
    - A general `Button` class.
    - Subclasses for `PlayButton` and `LoginButton`.
-3. Replace the JSON-based database with **MySQL** for better scalability and reliability.
+2. Replace the JSON-based database with **MySQL** for better scalability and reliability.
    
