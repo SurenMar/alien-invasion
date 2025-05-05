@@ -36,8 +36,5 @@ _Work in Progress_
 
 ## ✅ To-Do List
 
-1. Refactor the button system into a single file:
-   - A general `Button` class.
-   - Subclasses for `PlayButton` and `LoginButton`.
-2. Replace the JSON-based database with **MySQL** for better scalability and reliability.
+1. Replace the JSON-based database with **MySQL** for better scalability and reliability.
    
