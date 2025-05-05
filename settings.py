@@ -57,13 +57,15 @@ class Settings:
         self.alien_drop_speed = 10
         
         # play button settings:
-        self.button_width = 150
-        self.button_height = 64
-        self.button_colour = (50, 50, 50)
-        self.text_colour = (255, 255, 255)
-        self.text_style = None
-        self.text_size = 48
-        self.start_msg = "Start"
+        self.play_width = 150
+        self.play_height = 64
+        self.play_x = 0
+        self.play_y = 0
+        self.play_colour = (50, 50, 50)
+        self.play_text_colour = (255, 255, 255)
+        self.play_text_style = None
+        self.play_text_size = 48
+        self.start_text = "Start"
         
         # login buttons settings:
         self.login_height = 40
@@ -71,8 +73,9 @@ class Settings:
         self.login_size = 32
         self.login_colour = (0, 0, 255)
         self.login_text_colour = (255, 255, 255)
-        self.sign_in_adjustment = -57
-        self.sign_up_adjustment = 57
+        self.sign_in_x = -57
+        self.sign_up_x = 57
+        self.login_y = 167
         self.sign_in_text = "Sign in"
         self.sign_up_text = "Sign up"
         

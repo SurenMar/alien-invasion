@@ -7,12 +7,11 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats 
-from play_button import PlayButton
+from button import PlayButton, SignInButton, SignUpButton
 from scores import LevelCounter, Score
 from ship_lifes import ShipLifes
 from textbox import Textbox, TextboxError
 from home_screen import HomeScreen
-from login_buttons import LoginButton
 
 import errors
 import database_tools as db_tools
@@ -40,7 +39,6 @@ class AlienInvasion:
         self.ship_lifes = pygame.sprite.Group()
         
         pygame.display.set_caption("Alien Invasion")
-        self.play_button = PlayButton(self, "Play")
         self.game_active = False
         
         self.ship = Ship(self)
@@ -69,8 +67,9 @@ class AlienInvasion:
         self.hs_active = True # home screen flag
         self.gs_active = False # game screen flag
         
-        self.sign_in = LoginButton(self, self.settings.sign_in_text)
-        self.sign_up = LoginButton(self, self.settings.sign_up_text)
+        self.sign_in = SignInButton(self)
+        self.sign_up = SignUpButton(self)
+        self.play_button = PlayButton(self)
         
     def _create_screen(self):
         """
@@ -301,8 +300,8 @@ class AlienInvasion:
         Updates home screen every frame
         """
         self.home_screen.fill_home_screen()
-        self.sign_in.display_button()
-        self.sign_up.display_button()
+        self.sign_in.display_signin_button()
+        self.sign_up.display_signup_button()
         self._login_button_cursor()
         self._textbox_cursor()
     
@@ -341,7 +340,7 @@ class AlienInvasion:
         
         if not self.game_active:
             # Changes cursor to a hand if user hovers over 'Play' button
-            self.play_button.draw_button()
+            self.play_button.display_play_button()
             if pygame.mouse.get_cursor != pygame.SYSTEM_CURSOR_HAND and \
                 self.play_button.rect.collidepoint(self._scale_mouse()):
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
