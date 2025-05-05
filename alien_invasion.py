@@ -31,6 +31,7 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
         self._create_screen()
+        self._display_screen()
         
         self.clock = pygame.time.Clock()
         self.bullets = pygame.sprite.Group()
@@ -73,11 +74,42 @@ class AlienInvasion:
         
     def _create_screen(self):
         """
-        Creates scaled screen for different devices
+        Creates surface to draw screen
         """
-        self.screen = pygame.display.set_mode(
+        self.screen = pygame.Surface(
             (self.settings.screen_width, self.settings.screen_height))
         self.screen_rect = self.screen.get_rect()
+        
+        self.device_screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.device_width, self.device_height = self.device_screen.get_size()
+        
+        scale_x = self.device_width / self.settings.screen_width
+        scale_y = self.device_height / self.settings.screen_height
+        self.scale = min(scale_x, scale_y)
+        
+        self.scaled_width = int(self.settings.screen_width * self.scale)
+        self.scaled_height = int(self.settings.screen_height * self.scale)
+        
+    def _display_screen(self):
+        """
+        Scale screen to device setting, center it, and display it
+        """
+        scaled_screen = pygame.transform.scale(self.screen, (self.scaled_width,
+                                            self.scaled_height))
+        self.x_offset = (self.device_width - self.scaled_width) // 2
+        self.y_offset = (self.device_height - self.scaled_height) // 2
+        # add black bars if needed
+        self.device_screen.fill((0, 0, 0))
+        self.device_screen.blit(scaled_screen, (self.x_offset, self.y_offset))
+        
+        pygame.display.flip()
+        
+    def _scale_mouse(self):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        
+        device_mouse_x = int((mouse_x - self.x_offset) / self.scale)
+        device_mouse_y = int((mouse_y - self.y_offset) / self.scale)
+        return (device_mouse_x, device_mouse_y)
         
     def run_game(self):
         """
@@ -115,7 +147,7 @@ class AlienInvasion:
             if not self.current_error == None:
                 self.errors_dict[self.current_error].display_error()
                 
-            pygame.display.flip()
+            self._display_screen()
             self.clock.tick(60)
             
     def _check_events(self):
@@ -126,7 +158,7 @@ class AlienInvasion:
                 self._update_highscore
                 exit_game()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
+                mouse_pos = self._scale_mouse() 
                 self._check_textbox(mouse_pos)
                 self._check_sign_in(mouse_pos)
                 self._check_sign_up(mouse_pos)
@@ -172,7 +204,7 @@ class AlienInvasion:
                 self._update_highscore()
                 exit_game()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
+                mouse_pos = self._scale_mouse() 
                 if not self.textbox.rect.collidepoint(mouse_pos):
                     self.tb_active = False
                     self._check_sign_in(mouse_pos)
@@ -192,7 +224,7 @@ class AlienInvasion:
         Changes cursor to Ibeam if user hovers over textbox
         """
         if pygame.mouse.get_cursor != pygame.SYSTEM_CURSOR_IBEAM and \
-            self.textbox.rect.collidepoint(pygame.mouse.get_pos()):
+            self.textbox.rect.collidepoint(self._scale_mouse()): 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_IBEAM)
                     
     def _check_maxlen(self):
@@ -233,10 +265,10 @@ class AlienInvasion:
         Changes cursor to a hand if user hovers over either login button
         """
         if pygame.mouse.get_cursor != pygame.SYSTEM_CURSOR_HAND and \
-            self.sign_in.rect.collidepoint(pygame.mouse.get_pos()):
+            self.sign_in.rect.collidepoint(self._scale_mouse()):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         elif pygame.mouse.get_cursor != pygame.SYSTEM_CURSOR_HAND and \
-            self.sign_up.rect.collidepoint(pygame.mouse.get_pos()):
+            self.sign_up.rect.collidepoint(self._scale_mouse()): 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
@@ -311,7 +343,7 @@ class AlienInvasion:
             # Changes cursor to a hand if user hovers over 'Play' button
             self.play_button.draw_button()
             if pygame.mouse.get_cursor != pygame.SYSTEM_CURSOR_HAND and \
-                self.play_button.rect.collidepoint(pygame.mouse.get_pos()):
+                self.play_button.rect.collidepoint(self._scale_mouse()):
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)

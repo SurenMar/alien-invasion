@@ -32,3 +32,4 @@ class HomeScreen:
         self.text_rect.y -= 130
         
         self.screen.blit(self.text_img, self.text_rect)
+        
