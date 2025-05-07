@@ -1,6 +1,8 @@
 # Alien Invasion  
 An Alien Invasion game with a built-in database, developed in Python using Pygame.
 
+<img width="500" alt="ainv_game screenshot" src="https://github.com/user-attachments/assets/e6dc3ccb-0412-4370-b62f-1c79d885042c" />
+
 ## Features
 
 ### 🎮 Gameplay Overview
@@ -36,5 +38,6 @@ _Work in Progress_
 
 ## ✅ To-Do List
 
-1. Replace the JSON-based database with **MySQL** for better scalability and reliability.
+1. Write installation script in bash for Mac users
+2. Replace the JSON-based database with **MySQL** for better scalability and reliability.
    
