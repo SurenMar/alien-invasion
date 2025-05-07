@@ -92,7 +92,7 @@ class Settings:
         self.highscore_size = 100
         
         # game speed up
-        self.speedup_scale = 1.3
+        self.speedup_scale = 1.1
         
         self.init_dynamic_settings()
         
