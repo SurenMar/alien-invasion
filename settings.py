@@ -65,7 +65,7 @@ class Settings:
         self.play_text_colour = (255, 255, 255)
         self.play_text_style = None
         self.play_text_size = 48
-        self.start_text = "Start"
+        self.start_text = "Play"
         
         # login buttons settings:
         self.login_height = 40
@@ -74,9 +74,9 @@ class Settings:
         self.login_colour = (0, 0, 255)
         self.login_text_colour = (255, 255, 255)
         self.sign_in_x = -57
-        self.sign_up_x = 57
+        self.sign_up_x = 49
         self.login_y = 167
-        self.sign_in_text = "Sign in"
+        self.sign_in_text = "Login"
         self.sign_up_text = "Sign up"
         
         # scoreboard settings:

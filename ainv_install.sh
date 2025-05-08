@@ -10,7 +10,7 @@ declare -a not_installed_programs=()
 
 # Find the programs which the user has not installed
 for i in "${programs[@]}"; do
-    [ $(command -v $i) ] || not_installed_programs+=("$i")
+    command -v "$i" >/dev/null 2>&1 || not_installed_programs+=("$i")
 done
 
 # Tell user to install the programs they need
@@ -26,19 +26,21 @@ curl -s -o "${prog_name}.zip" "$git_rep"
 [ $? -ne 0 ] && { echo "Error: Could not download files"; exit 3; }
 
 # Check if downloaded files are corrupted
-unzip -t -qq "${prog_name}.zip" && { unzip -qq "${prog_name}.zip"; } \
+unzip -t -qq "${prog_name}.zip" && { unzip -o -qq "${prog_name}.zip"; } \
 				|| { echo "Some files are corrupted! Exiting..."; exit 4; }
-
 # Clean up directory
+[ -d "${prog_name}" ] && { echo -e "Directory ${prog_name} already exists. Rename or remove\n Exiting..."; exit 1; }
 rm "${prog_name}.zip" && mv "${prog_name}-main" $prog_name
 
 # Check for pygame and install if needed depending on OS
-user_OS="$(uname)"
-pip3 -qq show pygame
-if [ $? -ne 0 ]; then
-    if [ "$user_OS" == "Darwin" ]; then { pip3 install pygame; }
-    elif [ "$user_OS" == "Linux" ]; then { sudo apt-get install python3-pygame; }
-    else { echo "Invalid operating system. Exiting..."; exit 5; }
+if ! pip3 -qq show pygame; then
+    if [ "$(uname 2>/dev/null)" == "Darwin" ]; then #macos
+        pip3 install pygame
+    elif [ "$(lsb_release -is 2>/dev/null)" == "Ubuntu" ]; then #ubuntu
+        sudo apt-get update && sudo apt-get install -y python3-pygame
+    else 
+        echo -e "Unsupported OS version. Please install pygame manually.\n Exiting..."
+        exit 5
     fi
 fi
 
