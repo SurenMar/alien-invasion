@@ -1,8 +1,14 @@
 # A file to keep track of all the tools needed to modify/update the databse
 
 import json
+import os
 
 database_dict = {}
+
+# creates database file if non exist
+if not os.path.isfile('user_data.json'):
+    with open ('user_data.json', 'w'):
+        pass
 
 # opens databse
 try:
