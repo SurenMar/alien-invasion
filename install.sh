@@ -3,11 +3,11 @@
 
 # Check if user has bash, and their OS
 [ ${BASH_VERSION%%.*} -ge 3 ] || { echo "Need bash =>v3"; exit 1; }
-user_OS=$(uname)
+user_OS="$uname"
 
 # Define programms array based on user OS
-[ $"user_OS" == "Darwin" ] && { declare -a programs=("python3" "pip3" "unzip" "curl"); } \
-			   || { declare -a programs=("python" "pip" "unzip" "curl"); }
+[[ $"user_OS" == *"NT"* ]] && { declare -a programs=("python" "pip" "unzip" "curl"); } \
+			   || { declare -a programs=("python3" "pip3" "unzip" "curl"); }
 declare -a not_installed_programs=()
 
 # Find the programs which the user has not installed
@@ -37,7 +37,7 @@ rm "${prog_name}.zip" && mv "${prog_name}-main" $prog_name && cd "$prog_name"
 exit 1
 
 # Install pygame based on user OS
-[ $"user_OS" == "Darwin" ] && pip3 install pygame || pip install pygame
+[[ $"user_OS" == *"NT"* ]] && pip install pygame || pip3 install pygame
 [ $? -ne 0 ] && { echo "Unable to install required libraries. Exiting..."; exit 5; }
 
 chmod +x run.sh
