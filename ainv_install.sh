@@ -42,7 +42,9 @@ if [ $? -ne 0 ]; then
     fi
 fi
 
+# add execution permission to run.sh and create database file
 chmod +x "${prog_name}/run.sh"
+touch "${prog_name}/user_data.json"
 
 echo -e "You're all set!\nSimply type cd $prog_name and ./run.sh\nEnjoy the game!"
 
