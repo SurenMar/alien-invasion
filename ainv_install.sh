@@ -32,11 +32,17 @@ unzip -t -qq "${prog_name}.zip" && { unzip -qq "${prog_name}.zip"; } \
 # Clean up directory
 rm "${prog_name}.zip" && mv "${prog_name}-main" $prog_name
 
-# Install pygame if user does not have it installed
-pip3 -q install pygame
-[ $? -ne 0 ] && { echo "Unable to install required libraries. Exiting..."; exit 5; }
+# Check for pygame and install if needed depending on OS
+user_OS="$(uname)"
+pip3 -qq show pygame
+if [ $? -ne 0 ]; then
+    if [ "$user_OS" == "Darwin" ]; then { pip3 install pygame; }
+    elif [ "$user_OS" == "Linux" ]; then { sudo apt-get install python3-pygame; }
+    else { echo "Invalid operating system. Exiting..."; exit 5; }
+    fi
+fi
 
-chmod +x "$prog_name"/run.sh
+chmod +x "${prog_name}/run.sh"
 
 echo -e "You're all set!\nSimply type cd $prog_name and ./run.sh\nEnjoy the game!"
 
