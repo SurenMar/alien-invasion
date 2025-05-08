@@ -38,6 +38,6 @@ pip3 -q install pygame
 
 chmod +x "$prog_name"/run.sh
 
-echo -e "You're all set,\nsimply type ./run.sh in the termal and enjoy the game!"
+echo -e "You're all set!\nSimply type cd $prog_name and ./run.sh\nEnjoy the game!"
 
 exit 0
