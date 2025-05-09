@@ -35,7 +35,7 @@ An Alien Invasion game with a built-in database, developed in Python using Pygam
    5. Follow the steps provided once the script finishes.
    6. To play again, go into the `alien-invasion` directory and run: `./run.sh`.
 
-### For All Users (Including Mac):
+### For All Users:
    1. Download a ZIP file of **alien_invasion**.
    2. Unzip the file.
    3. The game files will be in a folder called `alien-invasion-main`.
