@@ -2,7 +2,7 @@
 #set -x #debug enable/disable
 
 # Check if user has bash
-[ ${BASH_VERSION%%.*} -ge 3 ] || { echo "Need bash =>v3"; exit 1; }
+[ ${BASH_VERSINFO} -ge 3 ] || { echo "Need bash =>v3"; exit 1; }
 
 # Define programms array based on user OS
 declare -a programs=("python3" "pip3" "unzip" "curl")
@@ -21,9 +21,8 @@ declare -r prog_name="alien-invasion"
 declare -r git_rep="https://codeload.github.com/SurenMar/${prog_name}/zip/refs/heads/main"
 
 # Get files from repo and store in zip file
-curl -s -o "${prog_name}.zip" "$git_rep"
-
-[ $? -ne 0 ] && { echo "Error: Could not download files"; exit 3; }
+curl -s -o "${prog_name}.zip" "$git_rep" || \
+{ echo "Error: Could not download files"; exit 3; }
 
 # Check if downloaded files are corrupted
 unzip -t -qq "${prog_name}.zip" && { unzip -o -qq "${prog_name}.zip"; } \
