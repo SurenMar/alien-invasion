@@ -1,5 +1,5 @@
 # Alien Invasion  
-An Alien Invasion game with a built-in database, developed in Python using Pygame.
+An Alien Invasion game with a built-in database, built using Pygame.
 
 <img width="500" alt="ainv_game screenshot" src="https://github.com/user-attachments/assets/e6dc3ccb-0412-4370-b62f-1c79d885042c" />
 
