@@ -18,7 +18,7 @@ An Alien Invasion game with a built-in database, built using Pygame.
 - A life is lost if an alien reaches the bottom of the screen or collides with the ship.
 
 ### 🔐 Login Page
-- The home screen includes a working **textbox**, along with **Sign In** and **Sign Up** buttons.
+- The home screen includes a **textbox**, along with **Sign In** and **Sign Up** buttons.
 - Error messages are shown in specific cases, such as trying to sign up with an already-used username.
 
 ### 🗃️ Database
