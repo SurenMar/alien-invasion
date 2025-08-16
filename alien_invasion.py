@@ -70,6 +70,10 @@ class AlienInvasion:
         self.sign_in = SignInButton(self)
         self.sign_up = SignUpButton(self)
         self.play_button = PlayButton(self)
+
+    def reset(self):
+        self.ship_lifes = 3
+        pass
         
     def _create_screen(self):
         """
