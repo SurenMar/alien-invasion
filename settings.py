@@ -93,6 +93,7 @@ class Settings:
         
         # game speed up
         self.speedup_scale = 1.1
+        self.current_speed = self.speedup_scale
         
         self.init_dynamic_settings()
         
@@ -119,3 +120,4 @@ class Settings:
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
         self.alien_points *= self.speedup_scale
+        self.current_speed *= self.speedup_scale

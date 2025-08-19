@@ -3,6 +3,8 @@
 import pygame
 from pygame.sprite import Sprite
 
+ALIENS_PER_ROW = 9
+
 class Alien(Sprite):
     """
     Class to represent a single alien
@@ -25,6 +27,7 @@ class Alien(Sprite):
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height
         self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
         
     def update(self):
         """

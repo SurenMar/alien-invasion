@@ -16,6 +16,8 @@ from home_screen import HomeScreen
 import errors
 import database_tools as db_tools
 
+from alien import ALIENS_PER_ROW
+
 
 class AlienInvasion:
     """
@@ -422,6 +424,22 @@ class AlienInvasion:
             if alien.check_edges():
                 self._change_fleet_dir()
                 break
+
+    def alien_coords(self):
+        """
+        Returns a list of coords for each column of aliens
+        """
+        alien_coords = []
+        for i, alien in enumerate(self.aliens.sprites()):
+            if i <= ALIENS_PER_ROW:
+                alien_coords.append(alien.x)
+        return alien_coords
+    
+    def closest_alien(self):
+        """
+        Returns the closest alien column (list of 1s and 0s)
+        """
+        pass
             
     def _change_fleet_dir(self):
         """
