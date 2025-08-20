@@ -30,6 +30,7 @@ class AlienInvasionAI:
         self.aliens = pygame.sprite.Group()
         self.stats = GameStats(self)
         self.ship_lifes = pygame.sprite.Group()
+        self.lowest_alien = None
         
         self.ship = Ship(self)
         self._create_fleet()
@@ -163,7 +164,7 @@ class AlienInvasionAI:
                 self._change_fleet_dir()
                 break
 
-    def alien_coords(self):
+    def find_alien_coords(self):
         """
         Returns a list of coords for each column of aliens
         """
@@ -174,7 +175,7 @@ class AlienInvasionAI:
             alien_coords.append(alien.rect.x)
         return alien_coords
     
-    def lowest_alien(self):
+    def _find_lowest_alien(self):
         """
         Return the y_coord of the lowest alien on screen
         """
@@ -201,7 +202,11 @@ class AlienInvasionAI:
         return True if num_pairs > 0 else False
     
     def _check_row_cleared(self):
-        pass
+        new_lowest_alien = self._find_lowest_alien()
+        if new_lowest_alien < self.lowest_alien:
+            self.lowest_alien = new_lowest_alien
+            return True
+        return False
 
     def _check_lvl_cleared(self):
         if not self.aliens:

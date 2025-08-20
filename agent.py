@@ -40,10 +40,10 @@ class Agent:
             ainv_game.ship.x / ainv_game.scaled_width,
 
             # Alien positions (x values)
-            ainv_game.alien_x_coords() / ainv_game.scaled_width,
+            ainv_game.find_alien_coords() / ainv_game.scaled_width,
 
             # Lowest alien position (y value)
-            ainv_game.lowest_alien() / ainv_game.scaled_height,
+            ainv_game.lowest_alien / ainv_game.scaled_height,
 
             # Number of lifes remaining
             ainv_game.stats.ships_left / ainv_game.settings.ship_lifes
