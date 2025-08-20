@@ -25,6 +25,10 @@ class AlienInvasionAI:
         Initializes the game and creates resources
         """
         self.settings = Settings()
+        self.screen = pygame.Surface(
+            (self.settings.screen_width, self.settings.screen_height))
+        self.screen_rect = self.screen.get_rect()
+
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.stats = GameStats(self)
@@ -36,7 +40,6 @@ class AlienInvasionAI:
         """Reset the game for a new episode."""
         self.stats.reset_stats()
         self.frame_iteration = 0
-        self.lowest_alien = None
         self.settings.init_dynamic_settings()
 
         # Reset ship lives and position
@@ -50,6 +53,7 @@ class AlienInvasionAI:
 
         # Recreate alien fleet
         self._create_fleet()
+        self.lowest_alien = self._find_lowest_alien()
 
         # Return the initial game state for RL
         return self.get_state()
@@ -58,6 +62,11 @@ class AlienInvasionAI:
         # Compute game speeds
         current_speed = self.settings.current_speed
         max_speed = self.settings.speedup_scale ** MAX_LEVEL
+
+        # Get alien coords
+        alien_coords = [alien_coord / self.settings.screen_width \
+            for alien_coord in self.find_alien_coords()]
+        alien_coords += [0.0] * (ALIENS_PER_ROW - len(alien_coords))
 
         state = [
             # Current game speed
@@ -70,7 +79,7 @@ class AlienInvasionAI:
             self.ship.x / self.settings.screen_width,
 
             # Alien positions (x values)
-            self.find_alien_coords() / self.settings.screen_width,
+            *alien_coords,
 
             # Lowest alien position (y value)
             self.lowest_alien / self.settings.screen_width,
@@ -117,7 +126,7 @@ class AlienInvasionAI:
             # Very small punishment
             reward = -0.2
         
-        return reward, game_over, self.stats.score, self.stats.level
+        return reward, game_over, self.stats.score
 
     def _move(self, action):
         if action[0]:
@@ -205,18 +214,13 @@ class AlienInvasionAI:
         """
         Returns a list of coords for each column of aliens
         """
-        alien_coords = []
-        for i, alien in enumerate(self.aliens.sprites()):
-            if i > ALIENS_PER_ROW:
-                break
-            alien_coords.append(alien.rect.x)
-        return alien_coords
+        return [alien.rect.x for alien in self.aliens.sprites()[:ALIENS_PER_ROW]]
     
     def _find_lowest_alien(self):
         """
         Return the y_coord of the lowest alien on screen
         """
-        return max(self.aliens.sprites(), key=lambda alien: alien.rect.y)
+        return max(alien.rect.y for alien in self.aliens.sprites())
 
     def _change_fleet_dir(self):
         """
