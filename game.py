@@ -20,7 +20,7 @@ class AlienInvasionAI:
     Overall class to manage game assets and behaviours
     """
     
-    def __init__(self):
+    def __init__(self, render=False):
         """
         Initializes the game and creates resources
         """
@@ -29,12 +29,37 @@ class AlienInvasionAI:
             (self.settings.screen_width, self.settings.screen_height))
         self.screen_rect = self.screen.get_rect()
 
+        self.render_enabled = render
+
+        # Initialize pygame only if rendering
+        if self.render_enabled:
+            pygame.init()
+            self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+            pygame.display.set_caption("Alien Invasion")
+            self.clock = pygame.time.Clock()
+        else:
+            # No rendering → No display, no clock
+            self.screen = None
+            self.clock = None
+
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.stats = GameStats(self)
         self.ship_lifes = pygame.sprite.Group()
         self.ship = Ship(self)
         self.reset()
+
+    def render(self):
+        """Render the game on screen if enabled."""
+        self.screen.fill(self.settings.bg_colour)
+        self.ship.blitme()
+        self.aliens.draw(self.screen)
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        self.ship_lifes.draw(self.screen)
+
+        pygame.display.flip()
+        self.clock.tick(60)
 
     def reset(self):
         """Reset the game for a new episode."""
@@ -124,7 +149,7 @@ class AlienInvasionAI:
                 reward = 1.0
         elif self._check_bullet_missed():
             # Very small punishment
-            reward = -0.2
+            reward = -1
         
         return reward, game_over, self.stats.score
 
