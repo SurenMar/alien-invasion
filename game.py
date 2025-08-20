@@ -42,7 +42,6 @@ class AlienInvasionAI:
         self.frame_iteration = 0
 
     def play_step(self, action):
-        reward = 0
         self.frame_iteration += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -53,28 +52,33 @@ class AlienInvasionAI:
         self._move(action)
         self._update_state()
 
+        reward = 0
+        game_over = False
         # Check if life is lost
         if self._check_life_lost():
             if self.stats.ships_left == 0:
-                # Big punishment
-                pass
+                # Very big punishment
+                reward = -20.0
+                game_over = True
             else:
-                # Big punishment
-                pass
+                # Medium punishment
+                reward = -5.0
         # Check if alien is hit
         elif self._check_bullet_alien_collisions():
             if self._check_lvl_cleared():
                 # Big reward
-                pass
+                reward = 10.0
             elif self._check_row_cleared():
                 # Medium reward
-                pass
+                reward = 3.0
             else:
                 # Small reward
-                pass
+                reward = 1.0
         elif self._check_bullet_missed():
-            # Small punishment
-            pass
+            # Very small punishment
+            reward = -0.2
+        
+        return reward, game_over, self.stats.score, self.stats.level
 
     def _move(self, action):
         if action[0]:
@@ -254,6 +258,7 @@ class AlienInvasionAI:
             new_life.position_life(life)
             self.ship_lifes.add(new_life)
     
+    # TODO
     def _update_highscore(self):
         if self.stats.highscore < self.stats.score:
             self.stats.highscore = self.stats.score
