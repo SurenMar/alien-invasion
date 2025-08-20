@@ -46,7 +46,7 @@ class Agent:
             ainv_game.lowest_alien() / ainv_game.scaled_height,
 
             # Number of lifes remaining
-            ainv_game.lifes_remaining / ainv_game.settings.ship_lifes
+            ainv_game.stats.ships_left / ainv_game.settings.ship_lifes
         ]
         return np.array(state, dtype=float)
     

@@ -39,18 +39,6 @@ class AlienInvasionAI:
     def reset(self):
         self.lifes_remaining = 3
         self.frame_iteration = 0
-        
-    def run_game(self):
-        """
-        Start main loop for the game
-        """
-        while True:
-            self._check_life_lost()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
-                
-            self.clock.tick(60)
 
     def play_step(self, action):
         reward = 0
@@ -62,19 +50,30 @@ class AlienInvasionAI:
 
         # Move
         self._move(action)
+        self._update_state()
 
-        # IF: game is over (all 3 lifes lost)
-
-        # ELSE: life is lost (ship hit)
-        # Return
-
-        # IF: bullet disappears
-            # IF: alien is hit
-                # IF: row is cleared
-                    # IF level is cleared
-
-            # ELSE: AI missed
-        # Return
+        # Check if life is lost
+        if self._check_life_lost():
+            if self.stats.ships_left == 0:
+                # Big punishment
+                pass
+            else:
+                # Big punishment
+                pass
+        # Check if alien is hit
+        elif self._check_bullet_alien_collisions():
+            if self._check_lvl_cleared():
+                # Big reward
+                pass
+            elif self._check_row_cleared():
+                # Medium reward
+                pass
+            else:
+                # Small reward
+                pass
+        elif self._check_bullet_missed():
+            # Small punishment
+            pass
 
     def _move(self, action):
         if action[0]:
@@ -85,6 +84,11 @@ class AlienInvasionAI:
             self.ship.moving_left = True
         elif action[2]:
             self._fire_bullet()
+
+    def _update_state(self):
+        self.ship.update()
+        self.bullets.update()
+        self._update_aliens()
     
     def _start_game(self):
         self.bullets.empty()
@@ -99,19 +103,14 @@ class AlienInvasionAI:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
-            
-    def _update_bullets(self):
-        """
-        Updates and manages the bullets fired
-        """
-        self.bullets.update()
-        
-        # Gets rid of dissapeared bullets
+    
+    def _check_bullet_missed(self):
+        return_val = False
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-                
-        self._check_bullet_alien_collisions()
+                return_val = True
+        return return_val
                 
     def _create_alien(self, x_posn, y_posn):
         """
@@ -199,28 +198,27 @@ class AlienInvasionAI:
         
         num_pairs = len(collisions)
         self.stats.score += num_pairs * self.settings.alien_points
-        
-        # reset fleet and active bullets
+        return True if num_pairs > 0 else False
+    
+    def _check_row_cleared(self):
+        pass
+
+    def _check_lvl_cleared(self):
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
             
             self.stats.level += 1
-            self.lvl_counter.prep_text("Level: " + str(self.stats.level))
-            self.lvl_counter.position()
-            self.stats.score += self.settings.lvl_points 
+            self.stats.score += self.settings.lvl_points
+            return True
+        return False
         
     def _ship_hit(self):
         """
-        Decreases lives and checks if the user has lost all lives
+        Decreases lives and reset positions
         """
         self.stats.ships_left -= 1
-        if self.stats.ships_left == 0:
-            self.game_active = False
-            self.gs_active = True
-            if self.stats.highscore < self.stats.score:
-                self.stats.highscore = self.stats.score
         
         life = list(self.ship_lifes)[-1]
         self.ship_lifes.remove(life)
@@ -231,23 +229,16 @@ class AlienInvasionAI:
         
         # reset screen
         self._create_fleet()
-    
-    def _check_alien_bottom(self):
+        
+    def _check_life_lost(self):
         """
         Checks if an alien has reached the bottom of the screen
         """
         for alien in self.aliens.sprites():
             if alien.rect.bottom > self.screen_rect.bottom - alien.rect.width:
                 self._ship_hit()
-                break
-        
-    def _check_life_lost(self):
-        """
-        Checks whether the ship was hit, or alien reached bottom
-        """
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
-            self._ship_hit()
-        self._check_alien_bottom()
+                return True
+        return False
         
     def _create_lifes(self):
         """
@@ -261,7 +252,3 @@ class AlienInvasionAI:
     def _update_highscore(self):
         if self.stats.highscore < self.stats.score:
             self.stats.highscore = self.stats.score
-            
-    
-def exit_game():
-    sys.exit()

@@ -512,8 +512,6 @@ class AlienInvasion:
         """
         Checks whether the ship was hit, or alien reached bottom
         """
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
-            self._ship_hit()
         self._check_alien_bottom()
         
     def _update_scores(self):
