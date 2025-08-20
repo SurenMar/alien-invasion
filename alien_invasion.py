@@ -433,9 +433,17 @@ class AlienInvasion:
         for i, alien in enumerate(self.aliens.sprites()):
             if i > ALIENS_PER_ROW:
                 break
-            alien_coords.append(alien.x)
+            alien_coords.append(alien.rect.x)
         return alien_coords
-            
+    
+    def lowest_alien(self):
+        lowest_alien = self.scaled_height
+        for i, alien in enumerate(self.aliens.sprites()):
+            if i > ALIENS_PER_ROW:
+                break
+            lowest_alien = max(lowest_alien, alien.rect.y)
+        return lowest_alien
+
     def _change_fleet_dir(self):
         """
         Drop entire fleet and change direction

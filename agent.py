@@ -8,6 +8,7 @@ from game import SnakeGameAI, Direction, Point
 # from model import Linear_QNet, QTrainer
 # from helper import plot
 
+MAX_LEVEL = 50
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
@@ -23,16 +24,25 @@ class Agent:
         # self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, ainv_game):
+
+        # Compute game speeds
+        current_speed = ainv_game.settings.current_speed
+        max_speed = ainv_game.settings.speedup_scale ** MAX_LEVEL
+
         state = [
             # Current game speed
-            ainv_game.settings.current_speed,
+            np.log(current_speed) / np.log(max_speed),
 
             # Number of bullets on screen
-            len(ainv_game.bullets),
+            len(ainv_game.bullets) / ainv_game.settings.bullets_allowed,
 
             # Ship position
-            ainv_game.ship.x,
+            ainv_game.ship.x / ainv_game.scaled_width,
 
             # Alien positions (x values)
-            ainv_game.alien_coords(),
+            ainv_game.alien_x_coords() / ainv_game.scaled_width,
+
+            # Lowest alien position (y value)
+            ainv_game.lowest_alien() / ainv_game.scaled_height,
         ]
+        return np.array(state, dtype=float)
