@@ -17,7 +17,7 @@ import errors
 import database_tools as db_tools
 
 from alien import ALIENS_PER_ROW
-
+  
 
 class AlienInvasion:
     """
