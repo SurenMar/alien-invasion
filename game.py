@@ -1,7 +1,7 @@
 """A file solely for the AI to train"""
 
-import sys
 import pygame
+import numpy as np
 
 from settings import Settings
 from ship import Ship
@@ -11,6 +11,9 @@ from game_stats import GameStats
 from ship_lifes import ShipLifes
 
 from alien import ALIENS_PER_ROW
+MAX_LEVEL = 50
+
+pygame.init()
 
 class AlienInvasionAI:
     """
@@ -21,25 +24,61 @@ class AlienInvasionAI:
         """
         Initializes the game and creates resources
         """
-        
-        pygame.init()
         self.settings = Settings()
-        
-        self.clock = pygame.time.Clock()
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.stats = GameStats(self)
         self.ship_lifes = pygame.sprite.Group()
-        self.lowest_alien = None
-        
         self.ship = Ship(self)
-        self._create_fleet()
-
         self.reset()
 
     def reset(self):
-        self.lifes_remaining = 3
+        """Reset the game for a new episode."""
+        self.stats.reset_stats()
         self.frame_iteration = 0
+        self.lowest_alien = None
+        self.settings.init_dynamic_settings()
+
+        # Reset ship lives and position
+        self.ship_lifes.empty()
+        self._create_lifes()
+        self.ship.centre_ship()
+
+        # Clear bullets and aliens
+        self.bullets.empty()
+        self.aliens.empty()
+
+        # Recreate alien fleet
+        self._create_fleet()
+
+        # Return the initial game state for RL
+        return self.get_state()
+
+    def get_state(self):
+        # Compute game speeds
+        current_speed = self.settings.current_speed
+        max_speed = self.settings.speedup_scale ** MAX_LEVEL
+
+        state = [
+            # Current game speed
+            np.log(current_speed) / np.log(max_speed),
+
+            # Number of bullets on screen
+            len(self.bullets) / self.settings.bullets_allowed,
+
+            # Ship position
+            self.ship.x / self.settings.screen_width,
+
+            # Alien positions (x values)
+            self.find_alien_coords() / self.settings.screen_width,
+
+            # Lowest alien position (y value)
+            self.lowest_alien / self.settings.screen_width,
+
+            # Number of lifes remaining
+            self.stats.ships_left / self.settings.ship_lifes
+        ]
+        return np.array(state, dtype=float)
 
     def play_step(self, action):
         self.frame_iteration += 1
@@ -94,12 +133,6 @@ class AlienInvasionAI:
         self.ship.update()
         self.bullets.update()
         self._update_aliens()
-    
-    def _start_game(self):
-        self.bullets.empty()
-        self.stats.reset_stats()
-        self.settings.init_dynamic_settings()
-        self._create_lifes()
         
     def _fire_bullet(self):
         """

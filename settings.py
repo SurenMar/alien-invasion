@@ -54,7 +54,7 @@ class Settings:
         self.bullets_allowed = 3
         
         # alien settings:
-        self.alien_drop_speed = 50
+        self.alien_drop_speed = 10
         
         # play button settings:
         self.play_width = 150
