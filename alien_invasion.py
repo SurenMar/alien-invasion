@@ -431,15 +431,10 @@ class AlienInvasion:
         """
         alien_coords = []
         for i, alien in enumerate(self.aliens.sprites()):
-            if i <= ALIENS_PER_ROW:
-                alien_coords.append(alien.x)
+            if i > ALIENS_PER_ROW:
+                break
+            alien_coords.append(alien.x)
         return alien_coords
-    
-    def closest_alien(self):
-        """
-        Returns the closest alien column (list of 1s and 0s)
-        """
-        pass
             
     def _change_fleet_dir(self):
         """

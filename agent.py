@@ -35,6 +35,4 @@ class Agent:
 
             # Alien positions (x values)
             ainv_game.alien_coords(),
-
-            # Closest alien (list of 9 binary values)
         ]

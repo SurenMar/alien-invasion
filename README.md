@@ -58,5 +58,7 @@ An Alien Invasion game with a built-in database, built using Pygame.
 
 ## ✅ To-Do List
 
-*empty...*
+- Implement agent to control the AI.
+- Implement AI via reinforcment learning.
+- Allow user to use AI through 'Auto Mode' button.
    
